@@ -3,180 +3,221 @@ package com.gdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Array;
-import java.util.Random;
+import java.util.LinkedList;
 
 public class Main extends ApplicationAdapter {
-    private ShapeRenderer shapeRenderer;
     private SpriteBatch spriteBatch;
+    private Texture[] horseFrames;
+    private Texture obstacleTexture;
+    private Texture backgroundTexture;
     private BitmapFont font;
-    private Array<int[]> snake;
-    private int[] foodPosition;
-    private int direction;
-    private float timer;
-    private boolean gameOver;
+    private int currentFrame;
+    private float frameTimer;
+    private float horseX, horseY;
+    private float velocityY;
+    private boolean isJumping;
 
-    private static final int TILE_SIZE = 20;
-    private static final int WIDTH = 640;
-    private static final int HEIGHT = 480;
+    private LinkedList<Float> obstacles;
+    private float obstacleSpeed;
+
+    private boolean gameOver;
+    private float gameOverTimer;
+    private float spawnTimer; // Timer to control the spawning of obstacles
+
+    private float backgroundX1, backgroundX2; // For background movement
+
+    private static final int HORSE_WIDTH = 200;
+    private static final int HORSE_HEIGHT = 200;
+    private static final int OBSTACLE_WIDTH = 48;
+    private static final int OBSTACLE_HEIGHT = 48;
+    private static final int GROUND_Y = 100;
+    private static final float GRAVITY = -0.5f;
+    private static final float JUMP_VELOCITY = 15;
+    private static final float GAME_OVER_DELAY = 3f;
+    private static final float OBSTACLE_SPAWN_INTERVAL = 2f; // Time interval to spawn new obstacle
+    private static final float BACKGROUND_SPEED = 2f; // Speed of background movement
 
     @Override
     public void create() {
-        shapeRenderer = new ShapeRenderer();
         spriteBatch = new SpriteBatch();
         font = new BitmapFont();
-        font.setColor(Color.WHITE);
-        font.getData().setScale(2);
 
-        snake = new Array<>();
-        snake.add(new int[]{WIDTH / 2, HEIGHT / 2});
-        spawnFood();
-        direction = Input.Keys.RIGHT;
-        timer = 0;
+        // Load horse animation frames
+        horseFrames = new Texture[]{
+            new Texture("h1.png"),
+            new Texture("h2.png"),
+            new Texture("h3.png"),
+            new Texture("h4.png")
+        };
+
+        // Load obstacle and background textures
+        obstacleTexture = new Texture("obstacle.png");
+        backgroundTexture = new Texture("background.jpg");
+
+        // Initialize game variables
+        horseX = 400;
+        horseY = GROUND_Y;
+        velocityY = 0;
+        isJumping = false;
+
+        obstacles = new LinkedList<>();
+        obstacleSpeed = 5; // Obstacles move right
+
+        // Game over state variables
         gameOver = false;
+        gameOverTimer = 0;
+
+        // Initialize spawn timer
+        spawnTimer = 0;
+
+        // Initialize background positions
+        backgroundX1 = 0;
+        backgroundX2 = backgroundTexture.getWidth();
+
+        // Start the first obstacle spawn
+        spawnObstacle();
     }
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0.76f, 0.69f, 0.50f, 1); // Light brown for soil background
+        // Clear the screen
+        Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        // Game over logic
         if (gameOver) {
+            gameOverTimer += Gdx.graphics.getDeltaTime();
             spriteBatch.begin();
-            font.draw(spriteBatch, "Game Over", WIDTH / 2f - 60, HEIGHT / 2f + 10);
+            spriteBatch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            font.draw(spriteBatch, "Game Over", Gdx.graphics.getWidth() / 2f - 50, Gdx.graphics.getHeight() / 2f);
             spriteBatch.end();
+
+            if (gameOverTimer > GAME_OVER_DELAY) {
+                Gdx.app.exit();
+            }
             return;
         }
 
+        // Handle user input and update game objects
         handleInput();
-        timer += Gdx.graphics.getDeltaTime();
-        if (timer >= 0.2f) {
-            updateSnake();
-            checkCollision();
-            timer = 0;
+        updateGameObjects();
+
+        // Update background positions
+        updateBackground();
+
+        // Draw everything on the screen
+        spriteBatch.begin();
+        // Draw the two backgrounds for the scrolling effect
+        spriteBatch.draw(backgroundTexture, backgroundX1, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        spriteBatch.draw(backgroundTexture, backgroundX2, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        // Draw the horse and obstacles
+        spriteBatch.draw(horseFrames[currentFrame], horseX, horseY, HORSE_WIDTH, HORSE_HEIGHT);
+
+        // Draw obstacles
+        for (Float obstacleX : obstacles) {
+            spriteBatch.draw(obstacleTexture, obstacleX, GROUND_Y, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
         }
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-        // Draw snake
-        for (int i = 0; i < snake.size; i++) {
-            int[] segment = snake.get(i);
-            shapeRenderer.setColor(0, 1, 0, 1); // Blue for the head
-            shapeRenderer.rect(segment[0], segment[1], TILE_SIZE, TILE_SIZE);// Green for the body
-            if (i == 0) {
-                // Head of the snake
-                // Draw eyes
-                shapeRenderer.setColor(Color.WHITE);
-                shapeRenderer.circle(segment[0] + 5, segment[1] + 15, 3); // Left eye
-                shapeRenderer.circle(segment[0] + 15, segment[1] + 15, 3); // Right eye
-                shapeRenderer.setColor(Color.BLACK);
-                shapeRenderer.circle(segment[0] + 5, segment[1] + 15, 1); // Left pupil
-                shapeRenderer.circle(segment[0] + 15, segment[1] + 15, 1); // Right pupil
-            } else {
-                // Body of the snake
-                // Draw cross pattern on body
-                shapeRenderer.setColor(Color.BLACK);
-                shapeRenderer.line(segment[0], segment[1], segment[0] + TILE_SIZE, segment[1] + TILE_SIZE); // Diagonal line 1
-                shapeRenderer.line(segment[0] + TILE_SIZE, segment[1], segment[0], segment[1] + TILE_SIZE); // Diagonal line 2
-            }
-        }
-
-        // Draw food
-        shapeRenderer.setColor(1, 0, 0, 1); // Red for food
-        shapeRenderer.rect(foodPosition[0], foodPosition[1], TILE_SIZE, TILE_SIZE);
-
-        shapeRenderer.end();
+        spriteBatch.end();
     }
 
     private void handleInput() {
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) && direction != Input.Keys.DOWN) {
-            direction = Input.Keys.UP;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && direction != Input.Keys.UP) {
-            direction = Input.Keys.DOWN;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && direction != Input.Keys.RIGHT) {
-            direction = Input.Keys.LEFT;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && direction != Input.Keys.LEFT) {
-            direction = Input.Keys.RIGHT;
+        // Jumping logic: when SPACE is pressed and horse is on the ground
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && horseY == GROUND_Y) {
+            isJumping = true;
+            velocityY = JUMP_VELOCITY;
+        }
+
+        // Move left or right
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            horseX = Math.max(0, horseX - 5);
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            horseX = Math.min(Gdx.graphics.getWidth() - HORSE_WIDTH, horseX + 5);
         }
     }
 
-    private void updateSnake() {
-        int[] head = snake.first();
-        int[] newHead = new int[]{head[0], head[1]};
-
-        switch (direction) {
-            case Input.Keys.UP:
-                newHead[1] += TILE_SIZE;
-                break;
-            case Input.Keys.DOWN:
-                newHead[1] -= TILE_SIZE;
-                break;
-            case Input.Keys.LEFT:
-                newHead[0] -= TILE_SIZE;
-                break;
-            case Input.Keys.RIGHT:
-                newHead[0] += TILE_SIZE;
-                break;
+    private void updateGameObjects() {
+        // Update animation frames
+        frameTimer += Gdx.graphics.getDeltaTime();
+        if (frameTimer > 0.1f) {
+            currentFrame = (currentFrame + 1) % horseFrames.length;
+            frameTimer = 0;
         }
 
-        snake.insert(0, newHead);
-        if (newHead[0] == foodPosition[0] && newHead[1] == foodPosition[1]) {
-            spawnFood();
-        } else {
-            snake.removeIndex(snake.size - 1);
-        }
-    }
-
-    private void spawnFood() {
-        Random random = new Random();
-        boolean validPosition = false;
-
-        while (!validPosition) {
-            int x = random.nextInt(WIDTH / TILE_SIZE) * TILE_SIZE;
-            int y = random.nextInt(HEIGHT / TILE_SIZE) * TILE_SIZE;
-
-            // Check if the position overlaps with the snake
-            validPosition = true; // Assume valid until proven otherwise
-            for (int[] segment : snake) {
-                if (segment[0] == x && segment[1] == y) {
-                    validPosition = false; // Overlaps, so try again
-                    break;
-                }
-            }
-
-            if (validPosition) {
-                foodPosition = new int[]{x, y}; // Assign valid position to food
+        // Update horse's vertical position and apply gravity
+        if (isJumping) {
+            velocityY += GRAVITY;
+            horseY += velocityY;
+            if (horseY <= GROUND_Y) {
+                horseY = GROUND_Y;
+                isJumping = false;
+                velocityY = 0;
             }
         }
-    }
 
+        // Move obstacles to the right
+        LinkedList<Float> newObstacles = new LinkedList<>();
+        for (Float obstacleX : obstacles) {
+            obstacleX += obstacleSpeed;
+            if (obstacleX < Gdx.graphics.getWidth()) { // Keep obstacles within the screen
+                newObstacles.add(obstacleX);
+            }
+        }
+        obstacles = newObstacles;
 
-    private void checkCollision() {
-        int[] head = snake.first();
-
-        // Check wall collision
-        if (head[0] < 0 || head[1] < 0 || head[0] >= WIDTH || head[1] >= HEIGHT) {
-            gameOver = true;
+        // Update the spawn timer and spawn new obstacles at fixed intervals
+        spawnTimer += Gdx.graphics.getDeltaTime();
+        if (spawnTimer >= OBSTACLE_SPAWN_INTERVAL) {
+            spawnObstacle();
+            spawnTimer = 0; // Reset the spawn timer
         }
 
-        // Check self-collision
-        for (int i = 1; i < snake.size; i++) {
-            if (head[0] == snake.get(i)[0] && head[1] == snake.get(i)[1]) {
+        // Collision detection: check if horse collides with any obstacle
+        for (Float obstacleX : obstacles) {
+            if (horseX + HORSE_WIDTH > obstacleX && horseX < obstacleX + OBSTACLE_WIDTH && horseY < GROUND_Y + OBSTACLE_HEIGHT) {
                 gameOver = true;
                 break;
             }
         }
     }
 
+    private void spawnObstacle() {
+        // Spawn an obstacle at the left edge of the screen
+        float x = 0;
+        obstacles.add(x);
+    }
+
+    private void updateBackground() {
+        // Move both background layers to create scrolling effect
+        backgroundX1 += BACKGROUND_SPEED;
+        backgroundX2 += BACKGROUND_SPEED;
+
+        // If the first background layer moves completely off-screen, reset its position to the left side of the second layer
+        if (backgroundX1 >= Gdx.graphics.getWidth()) {
+            backgroundX1 = backgroundX2 - backgroundTexture.getWidth();
+        }
+
+        // If the second background layer moves completely off-screen, reset its position to the left side of the first layer
+        if (backgroundX2 >= Gdx.graphics.getWidth()) {
+            backgroundX2 = backgroundX1 - backgroundTexture.getWidth();
+        }
+    }
+
     @Override
     public void dispose() {
-        shapeRenderer.dispose();
+        // Dispose of all resources
         spriteBatch.dispose();
         font.dispose();
+        for (Texture frame : horseFrames) {
+            frame.dispose();
+        }
+        obstacleTexture.dispose();
+        backgroundTexture.dispose();
     }
 }
