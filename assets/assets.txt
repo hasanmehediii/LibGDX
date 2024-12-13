@@ -1,5 +1,6 @@
 .gitkeep
-background.jpg
+b2.png
+b22.png
 h1.png
 h2.png
 h3.png

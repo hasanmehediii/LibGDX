@@ -11,9 +11,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import java.util.LinkedList;
 
 public class Main extends ApplicationAdapter {
+
     private SpriteBatch spriteBatch;
     private Texture[] horseFrames;
     private Texture obstacleTexture;
+    private Texture backgroundTexture;
     private BitmapFont font;
     private ShapeRenderer shapeRenderer;
 
@@ -29,6 +31,10 @@ public class Main extends ApplicationAdapter {
     private boolean gameOver;
     private float gameOverTimer;
     private float spawnTimer;
+
+    private float backgroundX1;
+    private float backgroundX2;
+    private float backgroundSpeed;
 
     private static final int HORSE_WIDTH = 200;
     private static final int HORSE_HEIGHT = 200;
@@ -57,6 +63,9 @@ public class Main extends ApplicationAdapter {
         // Load obstacle texture
         obstacleTexture = new Texture("obstacle.png");
 
+        // Load background texture
+        backgroundTexture = new Texture("b22.png");
+
         // Initialize game variables
         horseX = 400;
         horseY = GROUND_Y;
@@ -65,6 +74,11 @@ public class Main extends ApplicationAdapter {
 
         obstacles = new LinkedList<>();
         obstacleSpeed = 5;
+
+        // Background variables
+        backgroundX1 = 0;
+        backgroundX2 = Gdx.graphics.getWidth();
+        backgroundSpeed = 2;
 
         // Game over state variables
         gameOver = false;
@@ -100,22 +114,11 @@ public class Main extends ApplicationAdapter {
         handleInput();
         updateGameObjects();
 
-        // Draw the background layers
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-        // Sky
-        shapeRenderer.setColor(0.5f, 0.8f, 1f, 1); // Light blue
-        shapeRenderer.rect(0, 200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() - 200);
-
-        // Grass
-        shapeRenderer.setColor(0.3f, 0.6f, 0.2f, 1); // Green
-        shapeRenderer.rect(0, 150, Gdx.graphics.getWidth(), 50);
-
-        // Soil
-        shapeRenderer.setColor(0.4f, 0.2f, 0.1f, 1); // Brown
-        shapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), 150);
-
-        shapeRenderer.end();
+        // Draw the background
+        spriteBatch.begin();
+        spriteBatch.draw(backgroundTexture, backgroundX1, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        spriteBatch.draw(backgroundTexture, backgroundX2, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        spriteBatch.end();
 
         // Draw game objects
         spriteBatch.begin();
@@ -162,7 +165,7 @@ public class Main extends ApplicationAdapter {
         LinkedList<Float> newObstacles = new LinkedList<>();
         for (Float obstacleX : obstacles) {
             obstacleX += obstacleSpeed; // Move right
-            if (obstacleX < Gdx.graphics.getWidth() + OBSTACLE_WIDTH) { // Keep obstacles within the screen
+            if (obstacleX <= Gdx.graphics.getWidth()) { // Keep obstacles within the screen
                 newObstacles.add(obstacleX);
             }
         }
@@ -180,10 +183,21 @@ public class Main extends ApplicationAdapter {
                 break;
             }
         }
+
+        // Update background positions
+        backgroundX1 += backgroundSpeed;
+        backgroundX2 += backgroundSpeed;
+        if (backgroundX1 >= Gdx.graphics.getWidth()) {
+            backgroundX1 = backgroundX2 - Gdx.graphics.getWidth();
+        }
+        if (backgroundX2 >= Gdx.graphics.getWidth()) {
+            backgroundX2 = backgroundX1 - Gdx.graphics.getWidth();
+        }
+
     }
 
     private void spawnObstacle() {
-        obstacles.add((float) -OBSTACLE_WIDTH); // Spawn from the left of the screen
+        obstacles.add(0f); // Spawn at the left of the screen
     }
 
     @Override
@@ -195,5 +209,6 @@ public class Main extends ApplicationAdapter {
             frame.dispose();
         }
         obstacleTexture.dispose();
+        backgroundTexture.dispose();
     }
 }
