@@ -1,4 +1,4 @@
 ## LibGDX Project
  
 ## ScreenShots
-[!Image](images/game.png)
+![Gameplay](images/game.png)
