@@ -1,10 +1,21 @@
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-eclipse.project.name = appName + '-core'
+plugins {
+  id 'java-library'
+}
+
+repositories {
+  mavenCentral()
+  maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+}
 
 dependencies {
   api "com.badlogicgames.gdx:gdx:$gdxVersion"
 
-  if(enableGraalNative == 'true') {
+  if (enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
   }
+}
+
+// Ensure UTF-8 encoding for source and test code
+tasks.withType(JavaCompile).configureEach {
+  options.encoding = 'UTF-8'
 }

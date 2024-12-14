@@ -28,7 +28,7 @@ public class CarGame extends ApplicationAdapter {
     private static final int CAR_WIDTH = 100;
     private static final int CAR_HEIGHT = 160;
     private static final int BORDER_WIDTH = 20;
-    private static final int GRASS_WIDTH = 150;
+    private static final int GRASS_WIDTH = 200;
     private static final int LANE_LINE_HEIGHT = 50;
     private static final int LANE_LINE_WIDTH = 5;
     private static final int MISSILE_WIDTH = 10;
@@ -125,10 +125,20 @@ public class CarGame extends ApplicationAdapter {
 
         // Check for arrow key input and adjust car position
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            carX = Math.max(carX - 10, leftBoundary);
+            if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+                carX = Math.max(carX - 20, leftBoundary);
+            }
+            else{
+                carX = Math.max(carX - 10, leftBoundary);
+            }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            carX = Math.min(carX + 10, rightBoundary);
+            if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+                carX = Math.min(carX + 20, rightBoundary);
+            }
+            else{
+                carX = Math.min(carX + 10, rightBoundary);
+            }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
@@ -139,7 +149,12 @@ public class CarGame extends ApplicationAdapter {
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            carY = Math.max(carY - 10, bottomBoundary);
+            if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+                carY = Math.max(carY - 20, bottomBoundary);
+            }
+            else{
+                carY = Math.max(carY - 10, bottomBoundary);
+            }
         }
 
         // Fire missile with Enter key
