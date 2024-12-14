@@ -2,7 +2,7 @@ package com.gdx.game.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.gdx.game.Main;
+import com.gdx.game.CarGame;
 
 public class Lwjgl3Launcher {
     public static void main(String[] args) {
@@ -11,7 +11,7 @@ public class Lwjgl3Launcher {
     }
 
     private static void createApplication() {
-        new Lwjgl3Application(new Main(), getDefaultConfiguration());
+        new Lwjgl3Application(new CarGame(), getDefaultConfiguration());
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {

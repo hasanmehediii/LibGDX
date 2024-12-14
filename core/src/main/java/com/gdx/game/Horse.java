@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import java.util.LinkedList;
 
-public class Main extends ApplicationAdapter {
+public class Horse extends ApplicationAdapter {
 
     private SpriteBatch spriteBatch;
     private Texture[] horseFrames;
@@ -83,8 +83,6 @@ public class Main extends ApplicationAdapter {
         // Game over state variables
         gameOver = false;
         gameOverTimer = 0;
-
-        // Initialize spawn timer
         spawnTimer = 0;
 
         // Start the first obstacle spawn

@@ -1,6 +1,7 @@
 .gitkeep
 b2.png
 b22.png
+car.png
 h1.png
 h2.png
 h3.png
