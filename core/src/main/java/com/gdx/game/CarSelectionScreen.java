@@ -17,7 +17,11 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
     private final Game game;
     private Stage stage;
     private SpriteBatch batch;
-    private Texture backgroundTexture; // Background texture
+    private Texture backgroundTexture;
+    private Texture enemy1;
+    private Texture enemy2;
+    private Texture leftCrowdTexture;
+    private Texture rightCrowdTexture;// Background texture
     private Texture[] carTextures;
     private int currentCarIndex;
     private BitmapFont font;
@@ -31,10 +35,15 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
         batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
 
-        backgroundTexture = new Texture("stage.png"); // Load the background texture
+        backgroundTexture = new Texture("stage.png");
+        leftCrowdTexture = new Texture("leftcrowd.png");// Load the background texture
+        rightCrowdTexture = new Texture("rightcrowd .png");
+        enemy1 = new Texture("blue_enemy.png");
+        enemy2 = new Texture("yellow_enemy.png");
 
-        carTextures = new Texture[5];
-        for (int i = 0; i < 5; i++) {
+
+        carTextures = new Texture[6];
+        for (int i = 0; i < 6; i++) {
             carTextures[i] = new Texture("car" + (i + 1) + ".png");
         }
         currentCarIndex = 0;
@@ -90,7 +99,9 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                game.setScreen(new CarGame(carTextures[currentCarIndex])); // Pass selected texture
+                // Assuming you have references to the left and right crowd textures in CarSelectionScreen
+                game.setScreen(new CarGame(carTextures[currentCarIndex], leftCrowdTexture, rightCrowdTexture, enemy1, enemy2));
+                // Pass selected texture
             }
         });
 
