@@ -14,3 +14,4 @@ h2.png
 h3.png
 h4.png
 obstacle.png
+stage.png

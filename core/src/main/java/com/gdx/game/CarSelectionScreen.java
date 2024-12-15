@@ -17,6 +17,7 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
     private final Game game;
     private Stage stage;
     private SpriteBatch batch;
+    private Texture backgroundTexture; // Background texture
     private Texture[] carTextures;
     private int currentCarIndex;
     private BitmapFont font;
@@ -29,6 +30,8 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
     public void show() {
         batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
+
+        backgroundTexture = new Texture("stage.png"); // Load the background texture
 
         carTextures = new Texture[5];
         for (int i = 0; i < 5; i++) {
@@ -50,6 +53,10 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
+        // Draw the background image first
+        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        // Draw the current car texture
         batch.draw(carTextures[currentCarIndex],
             (float) Gdx.graphics.getWidth() / 2 - (float) carTextures[currentCarIndex].getWidth() / 2,
             (float) Gdx.graphics.getHeight() / 2 - (float) carTextures[currentCarIndex].getHeight() / 2);
@@ -61,7 +68,6 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
 
     private void createButtons() {
         Table table = new Table();
-        table.top().center();
         table.setFillParent(true);
 
         TextButton leftArrowButton = new TextButton("<", getButtonStyle());
@@ -96,15 +102,19 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
             }
         });
 
-        table.row().pad(20, 0, 20, 0);
-        table.add(backButton).fillX().uniformX();
+        // Positioning "Play" and "Back" buttons
+        table.row().padTop(100); // More space at the top
+        table.add(backButton).fillX().uniformX().colspan(3);
 
-        table.row().pad(20, 0, 20, 0);
-        table.add(leftArrowButton).padRight(50);
-        table.add(rightArrowButton).padLeft(50);
+        // Positioning arrow buttons
+        table.row().padTop(200); // Adjust vertical spacing for the arrows
+        table.add(leftArrowButton).padRight(200); // Move left arrow further left
+        table.add().expandX(); // Add empty space between arrows
+        table.add(rightArrowButton).padLeft(200); // Move right arrow further right
 
-        table.row().pad(20, 0, 20, 0);
-        table.add(playButton).fillX().uniformX();
+        // Positioning "Play" button
+        table.row().padTop(200); // More space below arrows
+        table.add(playButton).fillX().uniformX().colspan(3);
 
         stage.addActor(table);
     }
@@ -118,6 +128,7 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
     @Override
     public void hide() {
         batch.dispose();
+        backgroundTexture.dispose(); // Dispose of the background texture
         font.dispose();
         for (int i = 0; i < carTextures.length; i++) {
             if (i != currentCarIndex) {
@@ -126,5 +137,4 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
         }
         stage.dispose();
     }
-
 }

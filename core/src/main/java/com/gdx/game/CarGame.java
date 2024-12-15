@@ -111,9 +111,11 @@ public class CarGame extends com.badlogic.gdx.ScreenAdapter {
     }
 
     private void drawLaneLines() {
-        shapeRenderer.setColor(1, 1, 1, 1);
+        shapeRenderer.setColor(1, 1, 1, 1); // Set color to white
         for (Float laneLineY : laneLines) {
-            shapeRenderer.rect(Gdx.graphics.getWidth() / 2f - LANE_LINE_WIDTH / 2f, laneLineY, LANE_LINE_WIDTH, LANE_LINE_HEIGHT);
+            // Draw the lane line segment
+            shapeRenderer.rect(Gdx.graphics.getWidth() / 2f - LANE_LINE_WIDTH / 2f,
+                laneLineY, LANE_LINE_WIDTH, LANE_LINE_HEIGHT);
         }
     }
 
@@ -135,8 +137,19 @@ public class CarGame extends com.badlogic.gdx.ScreenAdapter {
     private void updateLaneLines() {
         LinkedList<Float> newLaneLines = new LinkedList<>();
         for (Float laneLineY : laneLines) {
-            if ((laneLineY -= scrollSpeed) > 0) newLaneLines.add(laneLineY);
+            laneLineY -= scrollSpeed; // Move each lane line down
+            if (laneLineY + LANE_LINE_HEIGHT > 0) { // Keep visible lines
+                newLaneLines.add(laneLineY);
+            }
         }
+
+        // Add new lane lines to ensure consistent spacing
+        while (newLaneLines.isEmpty() || newLaneLines.getLast() <= Gdx.graphics.getHeight()) {
+            // Add the next line at a position to maintain equal gaps
+            float newLineY = (newLaneLines.isEmpty() ? Gdx.graphics.getHeight() : newLaneLines.getLast() + LANE_LINE_HEIGHT * 2);
+            newLaneLines.add(newLineY);
+        }
+
         laneLines = newLaneLines;
     }
 

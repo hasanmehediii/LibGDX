@@ -1,6 +1,6 @@
 package com.gdx.game;
 
-import com.badlogic.gdx.Game;  // Import Game class
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,14 +17,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class MainMenuScreen extends com.badlogic.gdx.ScreenAdapter {
 
-    private final Game game; // Reference to the Game instance
+    private final Game game;
     private Stage stage;
     private SpriteBatch batch;
     private Texture backgroundTexture;
     private BitmapFont font;
     private ShapeRenderer shapeRenderer;
 
-    // Constructor to receive the Game instance
     public MainMenuScreen(Game game) {
         this.game = game;
     }
@@ -68,14 +67,14 @@ public class MainMenuScreen extends com.badlogic.gdx.ScreenAdapter {
 
     private BitmapFont getDefaultFontWithIncreasedSize() {
         BitmapFont font = new BitmapFont();
-        font.getData().setScale(4.0f); // Scale the font to increase the size
+        font.getData().setScale(4.0f);
         return font;
     }
 
     private TextButton.TextButtonStyle getButtonStyle(BitmapFont font) {
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
-        style.font = font;  // Use the default font with increased size
-        style.fontColor = Color.WHITE;  // Set the font color to white
+        style.font = font;
+        style.fontColor = Color.WHITE;
         return style;
     }
 
