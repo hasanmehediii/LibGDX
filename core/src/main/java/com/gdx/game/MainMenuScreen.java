@@ -1,5 +1,6 @@
 package com.gdx.game;
 
+import com.badlogic.gdx.Game;  // Import Game class
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,11 +17,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class MainMenuScreen extends com.badlogic.gdx.ScreenAdapter {
 
+    private final Game game; // Reference to the Game instance
     private Stage stage;
     private SpriteBatch batch;
     private Texture backgroundTexture;
     private BitmapFont font;
     private ShapeRenderer shapeRenderer;
+
+    // Constructor to receive the Game instance
+    public MainMenuScreen(Game game) {
+        this.game = game;
+    }
 
     @Override
     public void show() {
@@ -59,14 +66,12 @@ public class MainMenuScreen extends com.badlogic.gdx.ScreenAdapter {
         stage.draw();
     }
 
-    // Method to get the default font with increased size
     private BitmapFont getDefaultFontWithIncreasedSize() {
         BitmapFont font = new BitmapFont();
-        font.getData().setScale(4.0f); // Scale the font by 2x to increase the size
+        font.getData().setScale(4.0f); // Scale the font to increase the size
         return font;
     }
 
-    // Method to get button style with increased font size
     private TextButton.TextButtonStyle getButtonStyle(BitmapFont font) {
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
         style.font = font;  // Use the default font with increased size
@@ -74,45 +79,37 @@ public class MainMenuScreen extends com.badlogic.gdx.ScreenAdapter {
         return style;
     }
 
-    // Create buttons for Start and Exit
     private void createButtons() {
-        // Create a table to lay out the buttons
         Table table = new Table();
         table.top().center();
         table.setFillParent(true);
 
-        // Create Start button with increased font size
         TextButton startButton = new TextButton("START", getButtonStyle(font));
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // Action to take when Start button is clicked
-                // game.setScreen(new GameScreen());  // You can change this to the game screen
+                game.setScreen(new CarSelectionScreen(game));
             }
         });
 
-        // Create Exit button with increased font size
         TextButton exitButton = new TextButton("EXIT", getButtonStyle(font));
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();  // Close the game when Exit button is clicked
+                Gdx.app.exit();
             }
         });
 
-        // Add the buttons to the table
-        table.row().pad(20, 0, 20, 0);  // Increased padding for better visual separation
+        table.row().pad(20, 0, 20, 0);
         table.add(startButton).fillX().uniformX();
         table.row().pad(20, 0, 20, 0);
         table.add(exitButton).fillX().uniformX();
 
-        // Add the table to the stage
         stage.addActor(table);
     }
 
     @Override
     public void hide() {
-        // Dispose of assets when the screen is hidden
         batch.dispose();
         backgroundTexture.dispose();
         font.dispose();

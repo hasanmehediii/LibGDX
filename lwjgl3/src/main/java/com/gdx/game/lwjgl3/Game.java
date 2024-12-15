@@ -13,9 +13,10 @@ public class Game {
         new Lwjgl3Application(new com.badlogic.gdx.Game() {
             @Override
             public void create() {
-                this.setScreen(new MainMenuScreen());
+                this.setScreen(new MainMenuScreen(this));
             }
         }, getDefaultConfiguration());
+
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
