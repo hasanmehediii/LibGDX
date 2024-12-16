@@ -19,6 +19,7 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
     private SpriteBatch batch;
     private Texture backgroundTexture;
     private Texture enemy1;
+    //private Texture back;
     private Texture enemy2;
     private Texture leftCrowdTexture;
     private Texture rightCrowdTexture;// Background texture
@@ -40,6 +41,7 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
         rightCrowdTexture = new Texture("rightcrowd .png");
         enemy1 = new Texture("blue_enemy.png");
         enemy2 = new Texture("yellow_enemy.png");
+        //back = new Texture("background.jpg");
 
 
         carTextures = new Texture[6];

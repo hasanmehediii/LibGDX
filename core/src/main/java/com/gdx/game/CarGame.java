@@ -18,6 +18,7 @@ public class CarGame extends com.badlogic.gdx.ScreenAdapter {
     private final Texture rightCrowdTexture;
     private final Texture yellowEnemyTexture;
     private final Texture blueEnemyTexture;
+    private Texture pauseBackground;
 
     private BitmapFont font;
     private SpriteBatch spriteBatch;
@@ -35,6 +36,7 @@ public class CarGame extends com.badlogic.gdx.ScreenAdapter {
     private float carY;
     private float scrollSpeed;
     private final Random random;
+    private boolean isPaused = false;
 
     private static final int CAR_WIDTH = 100;
     private static final int CAR_HEIGHT = 160;
@@ -51,6 +53,7 @@ public class CarGame extends com.badlogic.gdx.ScreenAdapter {
     private boolean gameOver;
 
     public CarGame(Texture carTexture, Texture leftCrowdTexture, Texture rightCrowdTexture, Texture yellowEnemyTexture, Texture blueEnemyTexture) {
+        //this.game = game;
         this.carTexture = carTexture;
         this.leftCrowdTexture = leftCrowdTexture;
         this.rightCrowdTexture = rightCrowdTexture;
@@ -59,11 +62,13 @@ public class CarGame extends com.badlogic.gdx.ScreenAdapter {
         this.random = new Random();
     }
 
+
     @Override
     public void show() {
         shapeRenderer = new ShapeRenderer();
         spriteBatch = new SpriteBatch();
         font = new BitmapFont();
+        pauseBackground = new Texture("background.jpg");
 
         carX = Gdx.graphics.getWidth() / 2f - CAR_WIDTH / 2f;
         carY = 100;
@@ -96,6 +101,11 @@ public class CarGame extends com.badlogic.gdx.ScreenAdapter {
             return; // Stop rendering further
         }
 
+        if (isPaused) {
+            drawPauseScreen();
+            return;
+        }
+
         handleInput();
 
         updateGameObjects();
@@ -126,6 +136,12 @@ public class CarGame extends com.badlogic.gdx.ScreenAdapter {
     private void handleInput() {
         if (gameOver) return;
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            isPaused = !isPaused;
+        }
+
+        if (isPaused) return;
+
         float leftBoundary = GRASS_WIDTH + BORDER_WIDTH;
         float rightBoundary = Gdx.graphics.getWidth() - GRASS_WIDTH - BORDER_WIDTH - CAR_WIDTH;
         float bottomBoundary = 0;
@@ -149,6 +165,10 @@ public class CarGame extends com.badlogic.gdx.ScreenAdapter {
         spawnEnemies();
         updateEnemies();
         checkCollisions();
+
+        if (System.currentTimeMillis() % 10000 < 50) { // Every 10 seconds
+            scrollSpeed += 0.5F;
+        }
     }
 
     private void drawLaneLines() {
@@ -190,6 +210,20 @@ public class CarGame extends com.badlogic.gdx.ScreenAdapter {
         }
     }
 
+    private void drawPauseScreen() {
+        spriteBatch.begin();
+        spriteBatch.draw(pauseBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        font.getData().setScale(3);
+        font.draw(spriteBatch, "Game Paused. Press P to Resume", Gdx.graphics.getWidth() / 2f - 300, Gdx.graphics.getHeight() / 2f);
+
+        spriteBatch.end();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            isPaused = !isPaused;
+        }
+    }
+
     private void drawEnemies() {
         for (Enemy enemy : enemies) {
             spriteBatch.draw(enemy.texture, enemy.x, enemy.y, ENEMY_WIDTH, ENEMY_HEIGHT);
@@ -205,9 +239,7 @@ public class CarGame extends com.badlogic.gdx.ScreenAdapter {
             }
         }
 
-        // Add new lane lines to ensure consistent spacing
         while (newLaneLines.isEmpty() || newLaneLines.getLast() <= Gdx.graphics.getHeight()) {
-            // Add the next line at a position to maintain equal gaps
             float newLineY = (newLaneLines.isEmpty() ? Gdx.graphics.getHeight() : newLaneLines.getLast() + LANE_LINE_HEIGHT * 2);
             newLaneLines.add(newLineY);
         }
@@ -252,7 +284,6 @@ public class CarGame extends com.badlogic.gdx.ScreenAdapter {
             if (position + LANE_LINE_HEIGHT > 0) newRightCrowdPositions.add(position);
         }
 
-        // Add new crowd textures to fill the screen
         while (newLeftCrowdPositions.isEmpty() || newLeftCrowdPositions.getLast() <= Gdx.graphics.getHeight()) {
             float newY = (newLeftCrowdPositions.isEmpty() ? Gdx.graphics.getHeight() : newLeftCrowdPositions.getLast() + LANE_LINE_HEIGHT);
             newLeftCrowdPositions.add(newY);
@@ -292,18 +323,41 @@ public class CarGame extends com.badlogic.gdx.ScreenAdapter {
     }
 
     private void checkCollisions() {
+        LinkedList<Enemy> updatedEnemies = new LinkedList<>();
+        LinkedList<float[]> updatedMissiles = new LinkedList<>();
+
         for (Enemy enemy : enemies) {
-            if (enemy.y <= carY + CAR_HEIGHT && enemy.y + ENEMY_HEIGHT > carY) {
-                if (enemy.x + ENEMY_WIDTH > carX && enemy.x < carX + CAR_WIDTH) {
-                    gameOver = true;
+            boolean hit = false;
+            for (float[] missile : missiles) {
+                if (missile[0] < enemy.x + ENEMY_WIDTH && missile[0] + MISSILE_WIDTH > enemy.x &&
+                    missile[1] < enemy.y + ENEMY_HEIGHT && missile[1] + MISSILE_HEIGHT > enemy.y) {
+                    hit = true; // Missile hits enemy
                     break;
+                } else {
+                    updatedMissiles.add(missile);
                 }
+            }
+            if (!hit) {
+                updatedEnemies.add(enemy);
+            }
+        }
+
+        enemies = updatedEnemies;
+        missiles = updatedMissiles;
+
+        // Check if any enemy collides with the car
+        for (Enemy enemy : enemies) {
+            if (carX < enemy.x + ENEMY_WIDTH && carX + CAR_WIDTH > enemy.x &&
+                carY < enemy.y + ENEMY_HEIGHT && carY + CAR_HEIGHT > enemy.y) {
+                gameOver = true; // Collision with car ends the game
+                return;
             }
         }
     }
 
     private void drawGameOverScreen() {
         spriteBatch.begin();
+        spriteBatch.draw(pauseBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         font.getData().setScale(5);
         font.setColor(1, 0, 0, 1); // Red color
         font.draw(spriteBatch, "Game Over!", Gdx.graphics.getWidth() / 2f - 200, Gdx.graphics.getHeight() / 2f + 50);
@@ -312,7 +366,6 @@ public class CarGame extends com.badlogic.gdx.ScreenAdapter {
         spriteBatch.end();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            // Restart the game
             gameOver = false;
             resetGame();
         }
@@ -323,21 +376,27 @@ public class CarGame extends com.badlogic.gdx.ScreenAdapter {
     }
 
     private void resetGame() {
-        // Reset all game variables to start a new game
         carX = Gdx.graphics.getWidth() / 2f - CAR_WIDTH / 2f;
         carY = 100;
+
         enemies.clear();
         missiles.clear();
-        leftCrowdPositions.clear();
-        rightCrowdPositions.clear();
         laneLines.clear();
         borders.clear();
+        leftCrowdPositions.clear();
+        rightCrowdPositions.clear();
+
+        // Reinitialize lane lines and crowd positions
         for (int i = 0; i < Gdx.graphics.getHeight() / LANE_LINE_HEIGHT + 1; i++) {
             laneLines.add((float) (i * LANE_LINE_HEIGHT));
             borders.add((float) (i * LANE_LINE_HEIGHT));
             leftCrowdPositions.add((float) (i * LANE_LINE_HEIGHT));
             rightCrowdPositions.add((float) (i * LANE_LINE_HEIGHT));
         }
+
+        // Reset scroll speed and other game-related parameters
+        scrollSpeed = 5;
+        gameOver = false;
     }
 
     @Override

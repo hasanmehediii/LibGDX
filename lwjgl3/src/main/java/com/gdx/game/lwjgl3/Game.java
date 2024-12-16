@@ -30,5 +30,4 @@ public class Game {
 
         return configuration;
     }
-
 }
