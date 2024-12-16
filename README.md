@@ -76,6 +76,7 @@ git clone https://github.com/hasan-mehedii/LibGDX.git
    - **Right Arrow ➡️:** Select the next car in the list.
    - **PLAY ▶️:** Start the game with the selected car.
    - **BACK 🔙:** Go back to the main menu.
+   - **PAUSE ⏸️:** Freeze the whole game by pressing p from keyboard anytime in gameloop.
 
 ---
 
