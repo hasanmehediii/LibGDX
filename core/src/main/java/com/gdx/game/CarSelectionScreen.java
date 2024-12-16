@@ -2,6 +2,7 @@ package com.gdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -26,6 +27,7 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
     private Texture[] carTextures;
     private int currentCarIndex;
     private BitmapFont font;
+    private Music backgroundMusic;
 
     public CarSelectionScreen(Game game) {
         this.game = game;
@@ -56,6 +58,10 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
         Gdx.input.setInputProcessor(stage);
 
         createButtons();
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
+        backgroundMusic.setLooping(true); // Set the music to loop
+        backgroundMusic.setVolume(0.5f); // Adjust volume (0.0 to 1.0)
+        backgroundMusic.play();
     }
 
     @Override
@@ -102,6 +108,7 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
                 // Assuming you have references to the left and right crowd textures in CarSelectionScreen
+                backgroundMusic.stop();
                 game.setScreen(new CarGame(carTextures[currentCarIndex], leftCrowdTexture, rightCrowdTexture, enemy1, enemy2));
                 // Pass selected texture
             }
@@ -111,6 +118,7 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                backgroundMusic.stop();
                 game.setScreen(new MainMenuScreen(game)); // Adjust MainMenuScreen as needed
             }
         });
@@ -149,5 +157,8 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
             }
         }
         stage.dispose();
+        if (backgroundMusic != null) {
+            backgroundMusic.dispose(); // Dispose of music to free resources
+        }
     }
 }

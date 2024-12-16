@@ -1,7 +1,6 @@
 .gitkeep
-b2.png
-b22.png
-background.jpg
+back.jpeg
+background.jpeg
 blue_enemy.png
 car.png
 car1.png
@@ -11,12 +10,9 @@ car4.png
 car5.png
 car6.png
 font.ttf
-h1.png
-h2.png
-h3.png
-h4.png
+highscore.txt
 leftcrowd.png
-obstacle.png
+music.mp3
 rightcrowd .png
 stage.png
 yellow_enemy.png

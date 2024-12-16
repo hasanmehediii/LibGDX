@@ -2,6 +2,7 @@ package com.gdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -23,6 +24,7 @@ public class MainMenuScreen extends com.badlogic.gdx.ScreenAdapter {
     private Texture backgroundTexture;
     private BitmapFont font;
     private ShapeRenderer shapeRenderer;
+    private Music backgroundMusic; // Add a Music object
 
     public MainMenuScreen(Game game) {
         this.game = game;
@@ -34,7 +36,7 @@ public class MainMenuScreen extends com.badlogic.gdx.ScreenAdapter {
         stage = new Stage(new ScreenViewport());
 
         // Load the background image
-        backgroundTexture = new Texture("background.jpg");
+        backgroundTexture = new Texture("back.jpeg");
 
         // Get the default font with increased size
         font = getDefaultFontWithIncreasedSize();
@@ -47,6 +49,12 @@ public class MainMenuScreen extends com.badlogic.gdx.ScreenAdapter {
 
         // Create and position the buttons
         createButtons();
+
+        // Load and configure the background music
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
+        backgroundMusic.setLooping(true); // Set the music to loop
+        backgroundMusic.setVolume(0.5f); // Adjust volume (0.0 to 1.0)
+        backgroundMusic.play(); // Start the music
     }
 
     @Override
@@ -87,6 +95,7 @@ public class MainMenuScreen extends com.badlogic.gdx.ScreenAdapter {
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                backgroundMusic.stop(); // Stop music when transitioning to another screen
                 game.setScreen(new CarSelectionScreen(game));
             }
         });
@@ -95,6 +104,7 @@ public class MainMenuScreen extends com.badlogic.gdx.ScreenAdapter {
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                backgroundMusic.stop(); // Stop music when exiting the game
                 Gdx.app.exit();
             }
         });
@@ -114,5 +124,9 @@ public class MainMenuScreen extends com.badlogic.gdx.ScreenAdapter {
         font.dispose();
         shapeRenderer.dispose();
         stage.dispose();
+
+        if (backgroundMusic != null) {
+            backgroundMusic.dispose(); // Dispose of music to free resources
+        }
     }
 }
