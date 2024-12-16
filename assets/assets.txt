@@ -13,6 +13,7 @@ font.ttf
 highscore.txt
 leftcrowd.png
 music.mp3
+owner.png
 rightcrowd .png
 stage.png
 yellow_enemy.png

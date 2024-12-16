@@ -109,8 +109,19 @@ public class MainMenuScreen extends com.badlogic.gdx.ScreenAdapter {
             }
         });
 
+        // Add the "About" button
+        TextButton aboutButton = new TextButton("ABOUT", getButtonStyle(font));
+        aboutButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new AboutScreen(game)); // Switch to About screen
+            }
+        });
+
         table.row().pad(20, 0, 20, 0);
         table.add(startButton).fillX().uniformX();
+        table.row().pad(20, 0, 20, 0);
+        table.add(aboutButton).fillX().uniformX();
         table.row().pad(20, 0, 20, 0);
         table.add(exitButton).fillX().uniformX();
 
@@ -120,13 +131,15 @@ public class MainMenuScreen extends com.badlogic.gdx.ScreenAdapter {
     @Override
     public void hide() {
         batch.dispose();
-        backgroundTexture.dispose();
+        if (backgroundTexture != null) {
+            backgroundTexture.dispose(); // Dispose of background image texture
+        }
+        if (backgroundMusic != null) {
+            backgroundMusic.stop(); // Stop music when the screen is hidden
+            backgroundMusic.dispose(); // Dispose of music resource
+        }
         font.dispose();
         shapeRenderer.dispose();
         stage.dispose();
-
-        if (backgroundMusic != null) {
-            backgroundMusic.dispose(); // Dispose of music to free resources
-        }
     }
 }

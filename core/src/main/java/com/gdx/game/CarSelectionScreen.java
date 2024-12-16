@@ -87,7 +87,9 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
         Table table = new Table();
         table.setFillParent(true);
 
+        // Create Left Arrow Button
         TextButton leftArrowButton = new TextButton("<", getButtonStyle());
+        leftArrowButton.getLabel().setFontScale(2.0f); // Scale up the font size
         leftArrowButton.addListener(new ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
@@ -95,7 +97,9 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
             }
         });
 
+        // Create Right Arrow Button
         TextButton rightArrowButton = new TextButton(">", getButtonStyle());
+        rightArrowButton.getLabel().setFontScale(2.0f); // Scale up the font size
         rightArrowButton.addListener(new ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
@@ -103,18 +107,20 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
             }
         });
 
+        // Create Play Button
         TextButton playButton = new TextButton("PLAY", getButtonStyle());
+        playButton.getLabel().setFontScale(2.0f); // Scale up the font size
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                // Assuming you have references to the left and right crowd textures in CarSelectionScreen
                 backgroundMusic.stop();
                 game.setScreen(new CarGame(carTextures[currentCarIndex], leftCrowdTexture, rightCrowdTexture, enemy1, enemy2));
-                // Pass selected texture
             }
         });
 
+        // Create Back Button
         TextButton backButton = new TextButton("BACK", getButtonStyle());
+        backButton.getLabel().setFontScale(2.0f); // Scale up the font size
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
@@ -123,20 +129,21 @@ public class CarSelectionScreen extends com.badlogic.gdx.ScreenAdapter {
             }
         });
 
-        // Positioning "Play" and "Back" buttons
+        // Positioning "Back" Button
         table.row().padTop(100); // More space at the top
-        table.add(backButton).fillX().uniformX().colspan(3);
+        table.add(backButton).fillX().uniformX().colspan(3).height(80); // Increase button height
 
-        // Positioning arrow buttons
+        // Positioning Arrow Buttons
         table.row().padTop(200); // Adjust vertical spacing for the arrows
-        table.add(leftArrowButton).padRight(200); // Move left arrow further left
+        table.add(leftArrowButton).padRight(200).height(80); // Move left arrow further left and increase height
         table.add().expandX(); // Add empty space between arrows
-        table.add(rightArrowButton).padLeft(200); // Move right arrow further right
+        table.add(rightArrowButton).padLeft(200).height(80); // Move right arrow further right and increase height
 
-        // Positioning "Play" button
+        // Positioning "Play" Button
         table.row().padTop(200); // More space below arrows
-        table.add(playButton).fillX().uniformX().colspan(3);
+        table.add(playButton).fillX().uniformX().colspan(3).height(80); // Increase button height
 
+        // Add table to stage
         stage.addActor(table);
     }
 
