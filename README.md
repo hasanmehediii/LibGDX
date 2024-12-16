@@ -1,6 +1,8 @@
-# **Car Selection Game 🚗🎮**
+# **LibGDX Car Game 🚗**
 
 Welcome to **Car Selection Game**, an exciting game where players can choose their favorite car and embark on thrilling journeys. This project is developed using **LibGDX**, a cross-platform game development framework, and allows users to interact with the game through a simple and intuitive interface.
+
+---
 
 ## **Features ✨**
 
@@ -11,12 +13,16 @@ Welcome to **Car Selection Game**, an exciting game where players can choose the
 - **Background Music 🎶**: Immerse yourself in the gameplay experience with looping background music.
 - **Customizable UI 🖥️**: Enjoy a clean, responsive user interface designed for a seamless experience.
 
+---
+
 ## **Game Flow 🔄**
 
 1. **Main Menu 🏠**: The user starts by selecting their car from a list of available options.
 2. **Car Selection 🚗**: Use left and right arrow buttons to browse through the car options.
 3. **Play ▶️**: Once a car is selected, hit the "PLAY" button to start the game with the chosen car.
 4. **Back 🔙**: The "BACK" button allows users to return to the main menu.
+
+---
 
 ## **Screenshots 📸**
 
@@ -38,6 +44,8 @@ _Screenshot of the Pause screen._
 ![GameOver](images/gameover.png)  
 _Screenshot of the Game Over screen._
 
+---
+
 ## **Technologies Used 💻**
 
 - **LibGDX**: A cross-platform game development framework used for creating the game.
@@ -45,26 +53,31 @@ _Screenshot of the Game Over screen._
 - **Texture Files 🖼️**: Custom textures for cars, crowds, and backgrounds.
 - **Music 🎶**: Background music to enhance the gaming experience.
 
+---
+
 ## **Getting Started 🚀**
 
 To run the project on your local machine, follow these steps:
 
-### **1. Clone the Repository 📂**
+**1. Clone the Repository 📂:**
 ```bash
 git clone https://github.com/hasan-mehedii/LibGDX.git
 ```
-**2. Setup LibGDX ⚙️**
+**2. Setup LibGDX ⚙️:**
      Follow the official LibGDX setup guide to set up the development environment.
 
-**3. Run the Game 🏁**
+**3. Run the Game 🏁:**
      Once LibGDX is set up, open the project in your IDE and run the DesktopLauncher.java class to start the game.
 
+---
 
 ### How to Play 🎮
    - **Left Arrow ⬅️:** Select the previous car in the list.
    - **Right Arrow ➡️:** Select the next car in the list.
    - **PLAY ▶️:** Start the game with the selected car.
    - **BACK 🔙:** Go back to the main menu.
+
+---
 
 ### Contributing 🤝
    - Contributions are welcome! If you'd like to contribute to the project, please fork the repository, create a new branch, and submit a pull request 
@@ -93,6 +106,7 @@ git clone https://github.com/hasan-mehedii/LibGDX.git
    - **Open Game Art 🎨:** For the freely available textures and assets used in the game.
    - **Font Awesome 🖋️:** For icons used in the UI.
 
+---
 
 ## 🧑‍💻 Author
    - **Mehedi Hasan**
