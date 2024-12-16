@@ -64,7 +64,7 @@ To run the project on your local machine, follow these steps:
 git clone https://github.com/hasan-mehedii/LibGDX.git
 ```
 **2. Setup LibGDX ⚙️:**
-     Follow the official LibGDX setup guide to set up the development environment.
+     Follow the official [LibGDX setup guide](https://libgdx.com/) to set up the development environment.
 
 **3. Run the Game 🏁:**
      Once LibGDX is set up, open the project in your IDE and run the DesktopLauncher.java class to start the game.
