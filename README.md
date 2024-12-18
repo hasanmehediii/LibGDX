@@ -1,6 +1,7 @@
 # **LibGDX Car Game 🚗**
 
 Welcome to **Car Selection Game**, an exciting game where players can choose their favorite car and embark on thrilling journeys. This project is developed using **LibGDX**, a cross-platform game development framework, and allows users to interact with the game through a simple and intuitive interface.
+[Download the PDF](images/LibGDX%Project.pdf)
 
 ---
 
