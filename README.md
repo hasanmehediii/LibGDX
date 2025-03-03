@@ -27,23 +27,17 @@ Welcome to **Car Selection Game**, an exciting game where players can choose the
 
 ## **Screenshots 📸**
 
-![Main Menu](images/mainmenu.png)  
-_Screenshot of the main menu screen._
+| ![Main Menu](images/mainmenu.png) | ![About](images/about.png) |
+|:-------------------:|:------------------:|
+| _Main Menu._ | _About._ |
 
-![About](images/about.png)  
-_Screenshot of the About screen._
+| ![Car Selection](images/selectcar.png) | ![Gameplay](images/game.png) |
+|:-------------------:|:------------------:|
+| _Car Selection._ | _Gameplay._ |
 
-![Car Selection](images/selectcar.png)  
-_Screenshot of the car selection screen._
-
-![Game](images/game.png)  
-_Screenshot of the Gameplay screen._
-
-![Pause](images/pause.png)  
-_Screenshot of the Pause screen._
-
-![GameOver](images/gameover.png)  
-_Screenshot of the Game Over screen._
+| ![Pause](images/pause.png) | ![GameOver](images/gameover.png) |
+|:-------------------:|:------------------:|
+| _Pause._ | _GameOver._ |
 
 ---
 
