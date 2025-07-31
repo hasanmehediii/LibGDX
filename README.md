@@ -115,6 +115,6 @@ git clone https://github.com/hasan-mehedii/LibGDX.git
    - **Mehedi Hasan**
       - 🏫 Undergraduate Student, CSE Department, University of Dhaka
       - 📧 Email: [mehedi-2022415897@cs.du.ac.bd](mailto:mehedi-2022415897@cs.du.ac.bd)
-      - 🌐 GitHub: [github.com/hasan-mehedii](https://github.com/hasan-mehedii)
+      - 🌐 GitHub: [github.com/hasanmehediii](https://github.com/hasanmehediii)
 
      
