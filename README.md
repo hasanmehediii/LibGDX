@@ -1,5 +1,12 @@
 # **LibGDX Car Game 🚗**
 
+<p align="center">
+  <img src="racing-car.png" alt="LApp Logo" width="150" height="150" style="border-radius: 50%; border: 2px solid #ccc;" />
+  <br>
+  <strong>A 2D Car Racing Game</strong>
+</p>
+
+
 Welcome to **Car Selection Game**, an exciting game where players can choose their favorite car and embark on thrilling journeys. This project is developed using **LibGDX**, a cross-platform game development framework, and allows users to interact with the game through a simple and intuitive interface.
 [Download the PDF](Project.pdf)
 
